@@ -15,6 +15,33 @@
 - Chrome или Edge с поддержкой Manifest V3 (проверено на Edge 156 / Chromium 156).
 - Версия HRweb, на которой проверялось: **1.68.0**. Внутренний API HRweb недокументирован и может измениться в следующих версиях.
 
+## Перед первым запуском: сделайте бэкап
+
+Даже если тесты уже проходили — перед первым использованием на рабочем роутере сохраните текущие правила. Расширение меняет `domain.conf` и перезапускает `hrneo`.
+
+Подключитесь к роутеру по SSH и выполните:
+
+```sh
+cp /opt/etc/HydraRoute/domain.conf /opt/etc/HydraRoute/domain.conf.bak
+cp /opt/etc/HydraRoute/ip.list /opt/etc/HydraRoute/ip.list.bak
+```
+
+Проверить, что копии созданы:
+
+```sh
+ls -l /opt/etc/HydraRoute/domain.conf.bak /opt/etc/HydraRoute/ip.list.bak
+```
+
+Если что-то пойдёт не так, вернуть правила можно так:
+
+```sh
+cp /opt/etc/HydraRoute/domain.conf.bak /opt/etc/HydraRoute/domain.conf
+cp /opt/etc/HydraRoute/ip.list.bak /opt/etc/HydraRoute/ip.list
+neo restart
+```
+
+Бэкап особенно важен, если в `domain.conf` или `ip.list` уже есть большие ручные списки, GeoIP/GeoSite-директивы или нестандартный `PolicyOrder`.
+
 ## Установка
 
 1. Откройте `chrome://extensions` (или `edge://extensions`).
