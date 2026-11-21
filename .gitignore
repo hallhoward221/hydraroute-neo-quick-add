@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+dist/
+dev/mock_out.txt
+dev/mock_err.txt
+dev/*.png
+Thumbs.db
+.DS_Store

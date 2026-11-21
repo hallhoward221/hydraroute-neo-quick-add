@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>RKN content test</title>
+  <style>body { font-family: Consolas, monospace; background:#0b1220; color:#e5e7eb; padding:20px; } pre { white-space:pre-wrap; }</style>
+</head>
+<body>
+  <main id="root">
+    <h1>Проверка instagram.com в реестре Роскомнадзора (РКН) онлайн</h1>
+    <div>Есть совпадение в реестре РКН</div>
+    <p>домен instagram.com найден в реестре РКН.</p>
+    <h2>Сводная информация</h2>
+    <table>
+      <tr><th>НАЙДЕНО ПО</th><th>ЗНАЧЕНИЕ</th></tr>
+      <tr><td>домен или страница</td><td>*.instagram.com</td></tr>
+    </table>
+    <p>Что можно сделать</p>
+  </main>
+  <pre id="results">running…</pre>
+  <script>
+    window.__msgs = [];
+    window.chrome = window.chrome || {};
+    chrome.runtime = {
+      sendMessage: async function (message) { window.__msgs.push(message); return { ok: true }; },
+      onMessage: { addListener: function () {} }
+    };
+  </script>
+  <script src="../content/rkn.js"></script>
+  <script>
+    const out = [];
+    function last() { return window.__msgs[window.__msgs.length - 1]; }
+    function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    (async () => {
+      await wait(300);
+      out.push({ step: 'found', msg: last() });
+
+      document.getElementById('root').innerHTML = `
+        <h1>Проверка example.com</h1>
+        <div>В реестре не найден</div>
+        <p>домен example.com не найден в реестре РКН.</p>
+        <h2>Сводная информация</h2><p>Статус РКН не найден</p>
+      `;
+      await wait(500);
+      out.push({ step: 'not_found', msg: last() });
+
+      document.getElementById('root').innerHTML = `
+        <h1>Проверка доступа</h1>
+        <h2>Подтвердите, что вы человек</h2>
+        <button>Я человек</button>
+      `;
+      await wait(500);
+      out.push({ step: 'challenge', msg: last() });
+
+      document.getElementById('root').innerHTML = `
+        <h1>Доступ ограничен</h1>
+        <p>Доступ временно ограничен. Защита сайта остановила этот запрос.</p>
+      `;
+      await wait(500);
+      out.push({ step: 'blocked', msg: last() });
+
+      document.getElementById('results').textContent = JSON.stringify(out, null, 2);
+    })();
+  </script>
+</body>
+</html>

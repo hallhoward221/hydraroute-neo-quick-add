@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "HydraRoute Neo Quick Add",
+  "short_name": "HR Neo Quick Add",
+  "version": "0.9.5",
+  "description": "Добавляет текущий сайт в выбранную папку правил HydraRoute Neo одним кликом.",
+  "minimum_chrome_version": "110",
+  "permissions": [
+    "storage",
+    "cookies",
+    "declarativeNetRequest",
+    "notifications",
+    "contextMenus",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://2whois.ru/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://2whois.ru/*"
+      ],
+      "js": [
+        "content/rkn.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_title": "Добавить сайт в HydraRoute Neo",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "add-current": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Добавить текущий сайт в выбранную папку"
+    }
+  }
+}

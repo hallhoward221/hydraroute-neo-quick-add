@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HydraRoute Neo Quick Add — настройки</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div class="hero-icon">HR</div>
+      <div>
+        <h1>HydraRoute Neo <span>Quick Add</span></h1>
+        <p class="hero-sub">Один клик по иконке — текущий сайт уходит в выбранную папку правил, даже пока страница загружается.</p>
+      </div>
+      <div class="hero-version" id="version-pill">v0.1.0</div>
+    </header>
+
+    <main>
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2>Подключение</h2>
+            <p>Адрес веб-интерфейса HRweb и учётная запись роутера Keenetic.</p>
+          </div>
+          <span class="pill" id="connection-pill">не подключено</span>
+        </div>
+
+        <div class="grid">
+          <label class="field field-wide">
+            <span>Адрес HRweb</span>
+            <input id="base-url" type="url" spellcheck="false" placeholder="http://192.168.1.1:2000" autocomplete="off">
+            <small>Обычно <code>http://IP-роутера:2000</code>. HTTPS с самоподписанным сертификатом может не работать.</small>
+          </label>
+
+          <label class="field">
+            <span>Логин</span>
+            <input id="login" type="text" spellcheck="false" placeholder="admin" autocomplete="username">
+          </label>
+
+          <label class="field">
+            <span>Пароль</span>
+            <div class="password-wrap">
+              <input id="password" type="password" spellcheck="false" placeholder="Пароль роутера" autocomplete="current-password">
+              <button type="button" class="icon-btn" id="password-toggle" title="Показать пароль">👁</button>
+            </div>
+            <small id="password-hint">Пароль хранится локально в профиле браузера.</small>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="connect-btn">Проверить и загрузить папки</button>
+          <button type="button" class="btn" id="save-btn">Сохранить</button>
+          <button type="button" class="btn btn-ghost" id="forget-btn">Забыть пароль</button>
+        </div>
+
+        <div class="status" id="connection-status" hidden></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2>Папка правил</h2>
+            <p>Куда добавлять домены. Список загружается из HRweb.</p>
+          </div>
+          <button type="button" class="btn btn-small" id="refresh-btn">Обновить список</button>
+        </div>
+
+        <div class="grid">
+          <label class="field">
+            <span>Карточка политики</span>
+            <select id="policy-select" disabled>
+              <option value="">Сначала подключитесь к HRweb</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Группа внутри карточки</span>
+            <select id="group-select" disabled>
+              <option value="">Авто: первая активная группа</option>
+            </select>
+            <small>Если выбрать «Авто», домен попадёт в первую активную группу карточки.</small>
+          </label>
+        </div>
+
+        <div class="target-preview" id="target-preview" hidden></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2>Поведение</h2>
+            <p>Какой именно домен добавлять и что делать после записи.</p>
+          </div>
+        </div>
+
+        <div class="radio-row">
+          <label class="radio">
+            <input type="radio" name="domain-mode" value="exact" checked>
+            <span>
+              <strong>Точный адрес сайта</strong>
+              <small><code>gemini.google.com</code> останется <code>gemini.google.com</code>. Безопасно для Google и общих доменов.</small>
+            </span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="domain-mode" value="root">
+            <span>
+              <strong>Корневой домен</strong>
+              <small><code>music.youtube.com</code> → <code>youtube.com</code>. Покрывает все поддомены, но может быть слишком широко.</small>
+            </span>
+          </label>
+        </div>
+
+        <label class="check-row">
+          <input type="checkbox" id="strip-www">
+          <span>Убирать префикс <code>www.</code></span>
+        </label>
+
+        <label class="check-row">
+          <input type="checkbox" id="rkn-check" checked>
+          <span>Проверять сайт в реестре РКН перед добавлением</span>
+        </label>
+        <small class="field-note">Если домен не найден в РКН, расширение сообщит об этом и не будет добавлять его в HRneo. Проверка идёт через 2whois.ru.</small>
+
+        <div class="notice">
+          <strong>Проверка РКН может попросить подтверждение.</strong>
+          Если 2whois покажет «Проверяем, что вы не робот» или «Я человек», расширение откроет вкладку. Нажмите «Я человек» один раз — дальше проверка продолжится автоматически.
+        </div>
+
+        <div class="notice">
+          <strong>10 секунд между добавлениями.</strong>
+          После успешной записи расширение блокирует следующее добавление на 10 секунд: HRweb перезапускает hrneo, и ему нужно время.
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2>Безопасность</h2>
+            <p>Что важно знать перед использованием.</p>
+          </div>
+        </div>
+        <ul class="security-list">
+          <li>Пароль роутера хранится в <code>chrome.storage.local</code> и не отправляется никуда, кроме вашего HRweb.</li>
+          <li>Расширение получает доступ только к указанному адресу роутера, а не ко всем сайтам.</li>
+          <li>Разрешение <code>tabs</code> используется только для чтения адреса активной вкладки, в том числе во время загрузки. Содержимое сайтов не читается.</li>
+          <li>Для запросов расширения к HRweb удаляются заголовки <code>Origin</code>/<code>Referer</code> — иначе внутренний API HRweb отклоняет запросы с <code>chrome-extension://</code>.</li>
+          <li>Используйте отдельную учётную запись администратора Keenetic, если это возможно.</li>
+          <li>Не устанавливайте расширение на чужой компьютер с сохранённым паролем.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2>Диагностика</h2>
+            <p>Версия HRweb, последняя ошибка и состояние последнего добавления.</p>
+          </div>
+        </div>
+        <dl class="diagnostics" id="diagnostics">
+          <div><dt>HRweb</dt><dd id="diag-hrweb">—</dd></div>
+          <div><dt>hrneo</dt><dd id="diag-hrneo">—</dd></div>
+          <div><dt>Сессия</dt><dd id="diag-session">—</dd></div>
+          <div><dt>РКН</dt><dd id="diag-rkn">—</dd></div>
+          <div><dt>Последнее добавление</dt><dd id="diag-last">—</dd></div>
+          <div><dt>Последняя ошибка</dt><dd id="diag-error">—</dd></div>
+        </dl>
+        <div class="diagnostics-actions">
+          <button type="button" class="btn btn-small" id="clear-rkn-cache">Очистить кэш проверок РКН</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>HydraRoute Neo Quick Add · неофициальное расширение</span>
+      <span id="footer-state"></span>
+    </footer>
+  </div>
+
+  <script src="lib/util.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

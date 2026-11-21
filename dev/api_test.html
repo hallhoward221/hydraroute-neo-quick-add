@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>HRweb client test</title>
+  <style>
+    body { font-family: Consolas, monospace; background: #0b1220; color: #e5e7eb; padding: 20px; }
+    pre { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>HRweb client test</h1>
+  <pre id="results">running…</pre>
+  <script>
+    window.chrome = window.chrome || {};
+    chrome.runtime = chrome.runtime || { id: 'test-extension-id' };
+    chrome.cookies = {
+      get: async function (details) {
+        const name = details && details.name;
+        if (!name) return null;
+        const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]+)'));
+        return match ? { name: name, value: decodeURIComponent(match[1]) } : null;
+      }
+    };
+  </script>
+  <script src="/lib/util.js"></script>
+  <script src="/lib/parser.js"></script>
+  <script src="/lib/hrweb.js"></script>
+  <script src="/test.js"></script>
+</body>
+</html>
